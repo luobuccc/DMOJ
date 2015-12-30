@@ -1,7 +1,7 @@
 # WARNING: this executor may be unsafe due to socketcall!
 
 from .base_executor import ScriptExecutor
-from judgeenv import env
+from dmoj.conf import env
 
 class Executor(ScriptExecutor):
     ext = '.m'

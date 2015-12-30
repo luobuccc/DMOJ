@@ -6,7 +6,7 @@ from wbox import WBoxPopen
 from error import CompileError
 from .utils import test_executor
 from .resource_proxy import ResourceProxy
-from judgeenv import env
+from dmoj.conf import env
 
 VC_ENV = env['runtime'].get('vc_env', {})
 VC_COMPILE = os.environ.copy()

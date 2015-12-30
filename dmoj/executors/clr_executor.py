@@ -9,7 +9,7 @@ from threading import Thread
 from communicate import safe_communicate
 from dmoj.executors.resource_proxy import ResourceProxy
 from error import CompileError
-from judgeenv import env
+from dmoj.conf import env
 from pywinjob import *
 from winutils import execution_time, max_memory
 

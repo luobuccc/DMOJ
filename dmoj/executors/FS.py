@@ -1,7 +1,7 @@
 import os
 
 from dmoj.executors.utils import test_executor
-from judgeenv import env
+from dmoj.conf import env
 from .clr_executor import CLRExecutor
 
 

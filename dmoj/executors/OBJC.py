@@ -1,7 +1,7 @@
 from subprocess import check_output, CalledProcessError
 
 from GCCExecutor import GCCExecutor
-from judgeenv import env
+from dmoj.conf import env
 
 
 class Executor(GCCExecutor):

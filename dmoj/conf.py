@@ -2,6 +2,8 @@ import os
 import sys
 
 fs_encoding = os.environ.get('DMOJ_ENCODING', sys.getfilesystemencoding())
+env = {}
+only_executors = exclude_executors = None
 
 
 def unicodify(string):

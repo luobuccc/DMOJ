@@ -1,5 +1,5 @@
 from .C import Executor as CExecutor
-from judgeenv import env
+from dmoj.conf import env
 
 
 class Executor(CExecutor):

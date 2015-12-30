@@ -2,7 +2,7 @@ import os
 import shutil
 import tempfile
 import errno
-from judgeenv import env
+from dmoj.conf import env
 
 
 class ResourceProxy(object):

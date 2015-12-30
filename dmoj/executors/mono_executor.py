@@ -7,7 +7,7 @@ from collections import defaultdict
 from cptbox import CHROOTSecurity, ALLOW
 from cptbox.syscalls import *
 from .base_executor import CompiledExecutor
-from judgeenv import env
+from dmoj.conf import env
 
 
 CS_FS = ['.*\.so', '/proc/(?:self/|xen)', '/dev/shm/', '/proc/stat', '/usr/lib/mono',

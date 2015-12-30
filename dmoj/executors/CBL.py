@@ -4,7 +4,7 @@ from cptbox import CHROOTSecurity, SecurePopen
 from error import CompileError
 from .utils import test_executor
 from .resource_proxy import ResourceProxy
-from judgeenv import env
+from dmoj.conf import env
 
 CBL_FS = ['.*\.so']
 

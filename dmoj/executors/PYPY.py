@@ -1,5 +1,5 @@
 from .python_executor import PythonExecutor
-from judgeenv import env
+from dmoj.conf import env
 
 
 class Executor(PythonExecutor):

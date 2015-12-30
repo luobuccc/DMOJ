@@ -3,7 +3,7 @@ import errno
 
 from error import CompileError
 from .java_executor import JavaExecutor, JavaProcess, deunicode, JAVA_EXECUTOR
-from judgeenv import env
+from dmoj.conf import env
 
 
 class ScalaProcess(JavaProcess):

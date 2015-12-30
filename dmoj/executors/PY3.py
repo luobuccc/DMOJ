@@ -1,4 +1,4 @@
-from judgeenv import env
+from dmoj.conf import env
 from .python_executor import PythonExecutor
 
 PYTHON_FS = ['/etc/localtime$', '/dev/urandom$', '.*\.(?:so|py[co]?$)', '.*/lib(?:32|64)?/python[\d.]+/.*',

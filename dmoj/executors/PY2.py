@@ -1,4 +1,4 @@
-from judgeenv import env
+from dmoj.conf import env
 from .python_executor import PythonExecutor
 
 

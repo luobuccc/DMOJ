@@ -5,7 +5,7 @@ from .resource_proxy import ResourceProxy
 from .utils import test_executor
 from cptbox import SecurePopen, CHROOTSecurity, PIPE
 from cptbox.syscalls import *
-from judgeenv import env
+from dmoj.conf import env
 
 RACKET_FS = ['.*\.(?:so|rkt?$)', '/dev/tty$', '/proc/meminfo$', '.*racket.*', '/proc/stat$',
              '/proc/self/maps$', '/usr/lib/i386-linux-gnu', '/etc/nsswitch.conf$',

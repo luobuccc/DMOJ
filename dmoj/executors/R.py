@@ -1,7 +1,7 @@
 import errno
 
 from .base_executor import ScriptExecutor
-from judgeenv import env
+from dmoj.conf import env
 from cptbox.syscalls import *
 
 

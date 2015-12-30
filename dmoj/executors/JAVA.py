@@ -1,5 +1,5 @@
 from .java_executor import JavacExecutor
-from judgeenv import env
+from dmoj.conf import env
 
 
 class Executor(JavacExecutor):

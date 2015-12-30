@@ -1,5 +1,5 @@
 from .php_executor import PHPExecutor
-from judgeenv import env
+from dmoj.conf import env
 
 
 class Executor(PHPExecutor):

@@ -1,5 +1,5 @@
 from .CPP11 import Executor as CPP11Executor
-from judgeenv import env
+from dmoj.conf import env
 
 
 class Executor(CPP11Executor):
