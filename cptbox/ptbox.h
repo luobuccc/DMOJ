@@ -209,7 +209,7 @@ class pt_debugger_arm : public pt_debugger {
     long peek_reg(int);
     void poke_reg(int, long);
 public:
-    pt_debugger_x86();
+    pt_debugger_arm();
 
     virtual int syscall();
     virtual void syscall(int);
