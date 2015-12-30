@@ -30,11 +30,11 @@ void pt_debugger_arm::poke_reg(int reg, long data) {
 }
 
 int pt_debugger_arm::syscall() {
-    return (int) peek_reg(ARM_r7);
+    return (int) peek_reg(ARM_ORIG_r0);
 }
 
 void pt_debugger_arm::syscall(int id) {
-    poke_reg(ARM_r7, id);
+    poke_reg(ARM_ORIG_r0, id);
 }
 
 long pt_debugger_arm::result() {
@@ -54,12 +54,12 @@ void pt_debugger_arm::result(long value) {
         poke_reg(reg, data); \
     }
 
-make_arg(0, ARM_ORIG_r0);
-make_arg(1, ARM_r1);
-make_arg(2, ARM_r2);
-make_arg(3, ARM_r3);
-make_arg(4, ARM_r4);
-make_arg(5, ARM_r5);
+make_arg(0, ARM_r1);
+make_arg(1, ARM_r2);
+make_arg(2, ARM_r3);
+make_arg(3, ARM_r4);
+make_arg(4, ARM_r5);
+make_arg(5, ARM_r6);
 
 #undef make_arg
 
