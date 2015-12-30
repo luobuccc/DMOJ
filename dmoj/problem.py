@@ -6,7 +6,8 @@ from dmoj.test_case import TestCase, BatchedTestCase
 
 
 class Problem(object):
-    def __init__(self, loader=None):
+    def __init__(self, code, loader=None):
+        self.code = code
         self.loader = loader
         self.init = init = json.load(loader.open_text('init.json'))
 
