@@ -1,7 +1,8 @@
 import os
-from .clr_executor import CLRExecutor
-from executors.utils import test_executor
+
+from dmoj.executors.utils import test_executor
 from judgeenv import env
+from .clr_executor import CLRExecutor
 
 
 class Executor(CLRExecutor):

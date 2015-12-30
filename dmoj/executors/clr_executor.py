@@ -1,18 +1,17 @@
+import msvcrt
 import os
 import re
 import subprocess
-import msvcrt
-from threading import Thread
-import time
 import sys
+import time
+from threading import Thread
 
 from communicate import safe_communicate
+from dmoj.executors.resource_proxy import ResourceProxy
 from error import CompileError
-from executors.resource_proxy import ResourceProxy
 from judgeenv import env
-from winutils import execution_time, max_memory
 from pywinjob import *
-
+from winutils import execution_time, max_memory
 
 reexc = re.compile(r'E1AE1B1F-C5FE-4335-B642-9446634350A0:\r?\n(.*?):')
 
