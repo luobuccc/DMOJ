@@ -10,7 +10,7 @@ from posix.types cimport pid_t
 
 
 __all__ = ['Process', 'Debugger', 'MAX_SYSCALL_NUMBER',
-           'DEBUGGER_X86', 'DEBUGGER_X64', 'DEBUGGER_X86_ON_X64', 'DEBUGGER_X32']
+           'DEBUGGER_X86', 'DEBUGGER_X64', 'DEBUGGER_X86_ON_X64', 'DEBUGGER_X32', 'DEBUGGER_ARM']
 
 
 cdef extern from 'ptbox.h' nogil:
