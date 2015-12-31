@@ -10,7 +10,7 @@ available = set(i.group(1) for i in map(reexecutor.match,
 package_path = __name__.split('.')[1:]
 
 
-def load_module(executor):
+def load_executor(executor):
     try:
         module = __import__('%s.%s' % (__name__, executor))
     except ImportError as e:
@@ -43,7 +43,7 @@ class ExecutorLoader(dict):
             self._sandbox = env.get('selftest_sandboxing', True)
 
     def _load(self, name):
-        executor = load_module(name)
+        executor = load_executor(name)
         if executor is None:
             return None
         if hasattr(executor, 'initialize') and not executor.initialize(sandbox=self._sandbox):

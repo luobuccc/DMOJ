@@ -1,7 +1,6 @@
 from zipfile import ZipFile
 
 from dmoj.proxies import StreamDataProxy
-from dmoj.exception import DataNotFoundError
 
 
 class DataLoader(object):
@@ -26,7 +25,7 @@ class ZippedDataLoader(DataLoader):
         try:
             return StreamDataProxy(self.zipfile.open(name))
         except KeyError:
-            raise DataNotFoundError()
+            raise IOError()
 
     def close(self):
         self.zipfile.close()
@@ -37,10 +36,7 @@ class FileDataLoader(DataLoader):
         self.loader = loader
 
     def load(self, name):
-        try:
-            return self.loader.open_proxy(name)
-        except IOError:
-            raise DataNotFoundError()
+        return self.loader.open_proxy(name)
 
 
 class GeneratorDataLoader(DataLoader):
@@ -49,4 +45,4 @@ class GeneratorDataLoader(DataLoader):
 
     def load(self, name):
         # Perform some magic that creates a proxy, which would generate data for every case.
-        raise DataNotFoundError()
+        raise IOError()
