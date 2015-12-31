@@ -28,10 +28,11 @@ class ExecutorLoader(dict):
     def __init__(self):
         super(ExecutorLoader, self).__init__()
         self._available = None
+        self._sandbox = True
 
     def _populate(self):
         if self._available is None:
-            from dmoj.conf import only_executors, exclude_executors
+            from dmoj.conf import only_executors, exclude_executors, env
 
             executors = available.copy()
             if only_executors:
@@ -39,12 +40,13 @@ class ExecutorLoader(dict):
             if exclude_executors:
                 executors -= exclude_executors
             self._available = sorted(executors)
+            self._sandbox = env.get('selftest_sandboxing', True)
 
     def _load(self, name):
         executor = load_module(name)
         if executor is None:
             return None
-        if hasattr(executor, 'initialize') and not executor.initialize(sandbox=env.get('selftest_sandboxing', True)):
+        if hasattr(executor, 'initialize') and not executor.initialize(sandbox=self._sandbox):
             return None
         if hasattr(executor, 'aliases'):
             for alias in executor.aliases():
