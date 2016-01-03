@@ -10,7 +10,16 @@ class TestCase(object):
         self.total = points
         self.result = Result()
 
+    def grade(self, grader):
+        pass
+
 
 class BatchedTestCase(object):
     def __init__(self, list, points):
         self.cases = [TestCase(input, output, points) for input, output in list]
+
+    def grade(self, grader):
+        grader.on_batch_begin()
+        for case in self.cases:
+            case.grade(grader)
+        grader.on_batch_end()
