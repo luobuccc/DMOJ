@@ -322,7 +322,7 @@ class AMQPPacketManager(object):
             'queue': self.latency_queue, 'time': timer(),
         }).encode('zlib'))
 
-    def get_queue_name(self, language, problem):
+    def get_queue_name(self, problem, language):
         return 'dmoj.%s.%s' % (problem, language)
 
     def declare_problem_queue(self, problem, language):
@@ -331,7 +331,7 @@ class AMQPPacketManager(object):
 
     def add_problem_consumer(self, problem, language):
         self.submission_consumers[problem, language] = \
-            self.submission_chan.basic_consume(self.on_submission_request, queue=self.get_queue_name(language, problem))
+            self.submission_chan.basic_consume(self.on_submission_request, queue=self.get_queue_name(problem, language))
 
     def remove_problem_consumer(self, problem, language):
         tag = self.submission_consumers.get((problem, language))
