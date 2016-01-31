@@ -230,6 +230,7 @@ class AMQPPacketManager(object):
         self._reset()
 
     def _connect(self):
+        logger.info('Creating connection...')
         self.conn = pika.SelectConnection(self.params, on_open_callback=self.on_connection_open,
                                           stop_ioloop_on_close=False)
 
@@ -241,6 +242,8 @@ class AMQPPacketManager(object):
             self.conn.ioloop.start()
 
     def on_connection_open(self, connection):
+        logger.info('Connection opened')
+
         self._reset()
         self.conn.add_on_close_callback(self.on_connection_closed)
 
@@ -249,9 +252,10 @@ class AMQPPacketManager(object):
 
     def on_connection_closed(self, connection, reply_code, reply_text):
         if self.running:
-            self.conn.add_timeout(5, self._reconnect)
             logger.error('Disconnected, reconnecting in 5 seconds')
+            self.conn.add_timeout(5, self._reconnect)
         else:
+            logger.info('Gracefully exiting event loop')
             self.conn.ioloop.stop()
 
     def _reset(self):
@@ -265,14 +269,17 @@ class AMQPPacketManager(object):
         self.submission_consumers = []
 
     def on_receiver_channel_create(self, channel):
+        logger.info('Created message channel')
+
         self.receiver_chan = channel
 
         def on_latency_queue_declare(frame):
             self.latency_queue = frame.method.queue
             channel.basic_consume(self.on_latency_message, queue=self.latency_queue, no_ack=True)
 
-            self.conn.add_timeout(10, self.ping_packet)
-            self.conn.add_timeout(10, self._send_latency)
+            logger.info('Starting to ping...')
+            self.ping_packet()
+            self._send_latency()
 
         def on_broadcast_queue_bind(frame):
             channel.basic_consume(self.on_broadcast_message, queue=self.broadcast_queue, no_ack=True)
@@ -308,11 +315,14 @@ class AMQPPacketManager(object):
             return
 
     def _send_latency(self):
+        self.conn.add_timeout(10, self._send_latency)
         self.receiver_chan.basic_publish(exchange='', routing_key='latency', body=json.dumps({
             'queue': self.latency_queue, 'time': timer(),
         }).encode('zlib'))
 
     def on_submission_channel_create(self, channel):
+        logger.info('Created submission channel')
+
         self.submission_chan = channel
 
         channel.basic_qos(prefetch_count=1)
@@ -388,6 +398,8 @@ class AMQPPacketManager(object):
         })
 
     def ping_packet(self):
+        self.conn.add_timeout(10, self.ping_packet)
+
         packet = {'name': 'ping', 'start': self._start, 'latency': self._latency}
         for fn in sysinfo.report_callbacks:
             key, value = fn()
@@ -462,8 +474,10 @@ class AMQPPacketManager(object):
         self.conn.ioloop.stop()
 
     def run(self):
+        logger.info('Starting packet manager...')
         self._connect()
         try:
+            logger.info('Starting IO loop...')
             self.conn.ioloop.start()
         except KeyboardInterrupt:
             self.stop()
