@@ -281,6 +281,9 @@ class AMQPPacketManager(object):
             self.ping_packet()
             self._send_latency()
 
+            self.supported_executors_packet()
+            self.supported_problems_packet(self.judge.supported_problems())
+
         def on_broadcast_queue_bind(frame):
             channel.basic_consume(self.on_broadcast_message, queue=self.broadcast_queue, no_ack=True)
 
