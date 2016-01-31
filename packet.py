@@ -227,7 +227,6 @@ class AMQPPacketManager(object):
         self.params.credentials = pika.PlainCredentials(name, key)
 
         self.running = False
-        self._reset()
 
     def _connect(self):
         logger.info('Creating connection...')
@@ -264,9 +263,9 @@ class AMQPPacketManager(object):
         self._batch = 0
         self._id = None
         self._start = time.time()
-        self.problems = set()
+        self.problems = set(map(itemgetter(0), self.judge.supported_problems()))
         self._latency = 1
-        self.submission_consumers = []
+        self.submission_consumers = {}
 
     def on_receiver_channel_create(self, channel):
         logger.info('Created message channel')
@@ -282,7 +281,7 @@ class AMQPPacketManager(object):
             self._send_latency()
 
             self.supported_executors_packet()
-            self.supported_problems_packet(self.judge.supported_problems())
+            self.supported_problems_packet()
 
         def on_broadcast_queue_bind(frame):
             channel.basic_consume(self.on_broadcast_message, queue=self.broadcast_queue, no_ack=True)
@@ -323,13 +322,33 @@ class AMQPPacketManager(object):
             'queue': self.latency_queue, 'time': timer(),
         }).encode('zlib'))
 
+    def get_queue_name(self, language, problem):
+        return 'dmoj.%s.%s' % (problem, language)
+
+    def declare_problem_queue(self, problem, language):
+        self.submission_chan.queue_declare(queue=self.get_queue_name(problem, language),
+                                           callback=lambda frame: self.add_problem_consumer(problem, language))
+
+    def add_problem_consumer(self, problem, language):
+        self.submission_consumers[problem, language] = \
+            self.submission_chan.basic_consume(self.on_submission_request, queue=self.get_queue_name(language, problem))
+
+    def remove_problem_consumer(self, problem, language):
+        tag = self.submission_consumers.get((problem, language))
+        if tag is not None:
+            self.submission_chan.basic_cancel(consumer_tag=tag)
+
     def on_submission_channel_create(self, channel):
         logger.info('Created submission channel')
 
         self.submission_chan = channel
 
         channel.basic_qos(prefetch_count=1)
-        self.submission_consumers.append(channel.basic_consume(self.on_submission_request, queue='submission'))
+
+        languages = executors.keys()
+        for problem in self.problems:
+            for language in languages:
+                self.declare_problem_queue(problem, language)
 
     def on_submission_request(self, chan, method, properties, body):
         assert self._id is None
@@ -385,8 +404,21 @@ class AMQPPacketManager(object):
         logger.debug('Ping channel: %s', packet)
         self.submission_chan.basic_publish(exchange='', routing_key='judge-ping', body=json.dumps(packet).encode('zlib'))
 
-    def supported_problems_packet(self, problems):
-        self.problems = set(map(itemgetter(0), problems))
+    def supported_problems_packet(self, problems=None):
+        if problems is not None:
+            problems = set(map(itemgetter(0), problems))
+            languages = executors.keys()
+
+            for problem in (problems - self.problems):
+                for language in languages:
+                    self.declare_problem_queue(problem, language)
+
+            for problem in (self.problems - problems):
+                for language in languages:
+                    self.remove_problem_consumer(problem, language)
+
+            self.problems = problems
+
         logger.info('Update problems')
         self._send_ping_packet({
             'name': 'problem-update',
