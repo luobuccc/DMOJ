@@ -1,15 +1,16 @@
 def check(process_output, judge_output, **kwargs):
     from itertools import izip
     from string import split
-    process_lines = filter(None, process_output.split('\n'))
-    judge_lines = filter(None, judge_output.split('\n'))
-    if len(process_lines) != len(judge_lines):
+    token = kwargs.get('token', '\n')
+    process_tokenss = filter(None, process_output.split(token))
+    judge_tokenss = filter(None, judge_output.split(token))
+    if len(process_tokens) != len(judge_tokens):
         return False
-    process_lines = map(split, process_lines)
-    judge_lines = map(split, judge_lines)
-    process_lines.sort()
-    judge_lines.sort()
-    for process_line, judge_line in izip(process_lines, judge_lines):
-        if process_line != judge_line:
+    process_tokens = map(split, process_tokens)
+    judge_tokens = map(split, judge_tokens)
+    process_tokens.sort()
+    judge_tokens.sort()
+    for process_token, judge_token in izip(process_tokens, judge_tokens):
+        if process_token != judge_token:
             return False
     return True
