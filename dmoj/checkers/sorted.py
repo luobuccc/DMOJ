@@ -2,8 +2,8 @@ def check(process_output, judge_output, **kwargs):
     from itertools import izip
     from string import split
     token = kwargs.get('token', '\n')
-    process_tokenss = filter(None, process_output.split(token))
-    judge_tokenss = filter(None, judge_output.split(token))
+    process_tokens = filter(None, process_output.split(token))
+    judge_tokens = filter(None, judge_output.split(token))
     if len(process_tokens) != len(judge_tokens):
         return False
     process_tokens = map(split, process_tokens)
